@@ -43,15 +43,18 @@ func (c *Conn) parse() {
 	} else {
 		c.Conn.SetReadDeadline(c.nextDeadline)
 	}
-
-	c.hdr, c.err = Parse(c.r)
-	if c.err != nil {
+	var err error
+	c.hdr, err = Parse(c.r)
+	if err != nil && err.Error() == "PROXY UNKNOWN" {
 		return
 	}
-	if c.hdr != nil {
-		c.local = c.hdr.DestAddr()
-		c.remote = c.hdr.SrcAddr()
+	if err != nil {
+		c.err = err
+		return
 	}
+	c.local = c.hdr.DestAddr()
+	c.remote = c.hdr.SrcAddr()
+
 }
 
 // SetDeadline calls SetDeadline on the underlying net.Conn.
