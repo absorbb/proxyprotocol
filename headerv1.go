@@ -40,7 +40,7 @@ func parseV1(r *bufio.Reader) (*HeaderV1, error) {
 		// For "UNKNOWN", the rest of the line before the
 		// CRLF may be omitted by the sender, and the receiver must ignore anything
 		// presented before the CRLF is found.
-		return nil, nil
+		return &HeaderV1{}, fmt.Errorf("PROXY UNKNOWN")
 	}
 	var fam string
 	var srcIPStr, dstIPStr string
